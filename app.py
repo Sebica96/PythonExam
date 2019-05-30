@@ -29,12 +29,15 @@ def play_again():
         player_hand = []
         deck = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]*4
         game()
+        
+    elif again == "n":
+        print("Bye!")
+        exit()
+
     elif again != "y" or again !="n":
         print("You have to choose between 'y' for yes or 'n' for no")
         play_again()
-    else:
-        print("Bye!")
-        exit()
+    
 
 def total(hand):
     total = 0
@@ -86,6 +89,22 @@ def blackjack(dealer_hand, player_hand):
         losses += 1
         play_again()
 
+def blackjack_dealer(dealer_hand, player_hand):
+    global wins
+    global losses
+    if total(player_hand) == 21:
+        print_results(dealer_hand, player_hand)
+        print ("The player got a blackjack! You lost!\n")
+        losses += 1
+        play_again()
+    elif total(dealer_hand) == 21:
+        print_results(dealer_hand, player_hand)
+        print ("You got a blackhack! You won!\n")
+        wins += 1
+        play_again()
+
+
+
 def score(dealer_hand, player_hand):
         # score function now updates to global win/loss variables
         global wins
@@ -120,11 +139,13 @@ def game():
     global losses
     choice = 0
     userchoice = 0
-    aichoice = ['h', 's']
+    aichoice = ["h", "s"]
     clear()
 
     userchoice = input("Do you want to be a [D]ealer or a [P]layer: ").lower()
+
     if userchoice == 'd':
+
             print("-"*30+"\n")
             print("    \033[1;32;40mWINS:  \033[1;37;40m%s   \033[1;31;40mLOSSES:  \033[1;37;40m%s\n" % (wins, losses))
             print("-"*30+"\n")
@@ -132,32 +153,36 @@ def game():
             player_hand = deal(deck)
             print ("Your hand is " + str(dealer_hand[0]))
             print ("The players hand is " + str(player_hand) + " for a total of " + str(total(player_hand)))
-            blackjack(dealer_hand, player_hand)
+            blackjack_dealer(dealer_hand, player_hand)
             
             quit=False
 
             while not quit:
                 print ("Now the player will choose...")
-                print("-"*30+"\n")
+                print ("-"*30+"\n")
                 choice = aichoice.pop()
                 if choice == 'h':
-                    print('The players choice is to hit')
+                    print('The players choice is to hit!')
                     hit(player_hand)
-                    print(player_hand)
-                    print("Hand total: " + str(total(player_hand)))
+                    print("The players hand is " + str(player_hand))
+                    print("The players hand total is " + str(total(player_hand)))
+                    print("\n")
                     if total(player_hand)>21:
                         print('You win, the player busted!')
-                        print("The players hand total was " + str(total(player_hand)))
+                        print("The players hand total exceeded 21")
+                        print ("-"*30+"\n")
                         wins += 1
                         play_again()
 
                 elif choice == 's':
                     print('The players choice is to stand')
+                    print ("-"*30+"\n")
                     while total(dealer_hand)<17:
                         hit(dealer_hand)
                         print(dealer_hand)
                         if total(dealer_hand)>21:
                             print('You busted, the player wins!')
+                            print("\n")
                             losses += 1
                             play_again()
                     
@@ -165,6 +190,9 @@ def game():
                     print('The game ended, the player left the table!')
                     quit = True
                     exit()
+
+                
+
 
     elif userchoice == 'p':
         print("-"*30+"\n")
@@ -177,31 +205,40 @@ def game():
         blackjack(dealer_hand, player_hand)
         quit=False
 
-
         while not quit:
             choice = input("Do you want to [H]it, [S]tand, or [Q]uit: ").lower()
+            print("-"*30)
             if choice == 'h':
                 hit(player_hand)
-                print(player_hand)
-                print("Hand total: " + str(total(player_hand)))
+                print("Your hand is: " + str(player_hand))
+                print("The total value of your hand is: " + str(total(player_hand)))
+                print("-"*30)
                 if total(player_hand)>21:
-                    print('You busted')
+                    print('You busted!')
+                    print('Dealer wins!')
+                    print("-"*30)
                     losses += 1
                     play_again()
+                    
             elif choice=='s':
                 while total(dealer_hand)<17:
                     hit(dealer_hand)
-                    print(dealer_hand)
+                    print("The dealers hand is: " + str(dealer_hand))
+                    print("-"*30)
                     if total(dealer_hand)>21:
                         print('Dealer busts, you win!')
+                        print("-"*30)
                         wins += 1
                         play_again()
                 score(dealer_hand,player_hand)
                 play_again()
+
             elif choice == "q":
                 print("Bye!")
                 quit=True
                 exit()
+
+           
 
 
 if __name__ == "__main__":

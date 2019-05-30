@@ -31,7 +31,7 @@ def play_again():
         game()
     elif again != "y" or again !="n":
         print("You have to choose between 'y' for yes or 'n' for no")
-        again = input("Do you want to play again? (Y/N) : ").lower()
+        play_again()
     else:
         print("Bye!")
         exit()

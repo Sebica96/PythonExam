@@ -9,6 +9,7 @@ deck = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]*(int(decks)*4)
 # initialize scores
 wins = 0
 losses = 0
+money = 1000
 
 def deal(deck):
     hand = []
@@ -82,12 +83,12 @@ def blackjack(dealer_hand, player_hand):
         print_results(dealer_hand, player_hand)
         print ("Congratulations! You got a Blackjack!\n")
         wins += 1
-        play_again()
+        #play_again()
     elif total(dealer_hand) == 21:
         print_results(dealer_hand, player_hand)
         print ("Sorry, you lose. The dealer got a blackjack.\n")
         losses += 1
-        play_again()
+        #play_again()
 
 def blackjack_dealer(dealer_hand, player_hand):
     global wins
@@ -105,34 +106,41 @@ def blackjack_dealer(dealer_hand, player_hand):
 
 
 
-def score(dealer_hand, player_hand):
+def score(dealer_hand, player_hand, bet):
         # score function now updates to global win/loss variables
         global wins
         global losses
+        global money
         if total(player_hand) == 21:
             print_results(dealer_hand, player_hand)
             print ("Congratulations! You got a Blackjack!\n")
             wins += 1
+            money += int(bet)
         elif total(dealer_hand) == 21:
             print_results(dealer_hand, player_hand)
             print ("Sorry, you lose. The dealer got a blackjack.\n")
             losses += 1
+            money -= int(bet)
         elif total(player_hand) > 21:
             print_results(dealer_hand, player_hand)
             print ("Sorry. You busted. You lose.\n")
             losses += 1
+            money -= int(bet)
         elif total(dealer_hand) > 21:
             print_results(dealer_hand, player_hand)
             print ("Dealer busts. You win!\n")
             wins += 1
+            money += int(bet)
         elif total(player_hand) < total(dealer_hand):
             print_results(dealer_hand, player_hand)
             print ("Sorry. Your score isn't higher than the dealer. You lose.\n")
             losses += 1
+            money -= int(bet)
         elif total(player_hand) > total(dealer_hand):
             print_results(dealer_hand, player_hand)
             print ("Congratulations. Your score is higher than the dealer. You win\n")
             wins += 1
+            money += int(bet)
 
 def score_dealer(dealer_hand, player_hand):
         # score function now updates to global win/loss variables
@@ -224,49 +232,58 @@ def game():
 
 
     if userchoice == 'p':
-        
         print("-"*30+"\n")
         print("    \033[1;32;40mWINS:  \033[1;37;40m%s   \033[1;31;40mLOSSES:  \033[1;37;40m%s\n" % (wins, losses))
         print("-"*30+"\n")
-        dealer_hand = deal(deck)
-        player_hand = deal(deck)
-        print ("The dealer is showing a " + str(dealer_hand[0]))
-        print ("You have a " + str(player_hand) + " for a total of " + str(total(player_hand)))
-        blackjack(dealer_hand, player_hand)
-        quit=False
-
-        while not quit:
-            choice = input("Do you want to [H]it, [S]tand, or [Q]uit: ").lower()
-            print("-"*30)
-            if choice == 'h':
-                hit(player_hand)
-                print("Your hand is: " + str(player_hand))
-                print("The total value of your hand is: " + str(total(player_hand)))
+        global money
+        bet = 0
+        while money > 0:
+            bet = input("Choose your bet, must be lower than " + str(money) + "\n")
+            
+            dealer_hand = deal(deck)
+            player_hand = deal(deck)
+            print ("The dealer is showing a " + str(dealer_hand[0]))
+            print ("You have a " + str(player_hand) + " for a total of " + str(total(player_hand)))
+            blackjack(dealer_hand, player_hand)
+            quit=False
+            
+            
+            while not quit:
+                choice = input("Do you want to [H]it, [S]tand, or [Q]uit: ").lower()
                 print("-"*30)
-                if total(player_hand)>21:
-                    print('You busted!')
-                    print('Dealer wins!')
+                if choice == 'h':
+                    hit(player_hand)
+                    print("Your hand is: " + str(player_hand))
+                    print("The total value of your hand is: " + str(total(player_hand)))
                     print("-"*30)
-                    losses += 1
-                    play_again()
-                    
-            elif choice=='s':
-                while total(dealer_hand)<17:
-                    hit(dealer_hand)
-                    print("The dealers hand is: " + str(dealer_hand))
-                    print("-"*30)
-                    if total(dealer_hand)>21:
-                        print('Dealer busts, you win!')
+                    if total(player_hand)>21:
+                        print('You busted!')
+                        print('Dealer wins!')
                         print("-"*30)
-                        wins += 1
-                        play_again()
-                score(dealer_hand,player_hand)
-                play_again()
+                        losses += 1
+                        money = money - int(bet)
+                        quit = True
+                        
+                elif choice=='s':
+                    while total(dealer_hand)<17:
+                        hit(dealer_hand)
+                        print("The dealers hand is: " + str(dealer_hand))
+                        print("-"*30)
+                        if total(dealer_hand)>21:
+                            print('Dealer busts, you win!')
+                            print("-"*30)
+                            wins += 1
+                            money += int(bet)
+                            quit = True
+                    score(dealer_hand,player_hand,bet)
+                    quit = True
 
-            elif choice == "q":
-                print("Bye!")
-                quit=True
-                exit()
+                elif choice == "q":
+                    print("Bye!")
+                    quit=True
+                    exit()
+        print("You are out of credits! You are kicked out of the table!")
+        play_again()
 
            
 

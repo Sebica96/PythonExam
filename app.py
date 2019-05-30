@@ -134,6 +134,35 @@ def score(dealer_hand, player_hand):
             print ("Congratulations. Your score is higher than the dealer. You win\n")
             wins += 1
 
+def score_dealer(dealer_hand, player_hand):
+        # score function now updates to global win/loss variables
+        global wins
+        global losses
+        if total(player_hand) == 21:
+            print_results(dealer_hand, player_hand)
+            print ("The player got a BLACKJACK! You lost!\n")
+            losses += 1
+        elif total(dealer_hand) == 21:
+            print_results(dealer_hand, player_hand)
+            print ("You got a BLACKJACK! You won!\n")
+            wins += 1
+        elif total(player_hand) > 21:
+            print_results(dealer_hand, player_hand)
+            print ("The player busted. You win!\n")
+            wins += 1
+        elif total(dealer_hand) > 21:
+            print_results(dealer_hand, player_hand)
+            print ("You bust! You lost!\n")
+            losses += 1
+        elif total(player_hand) < total(dealer_hand):
+            print_results(dealer_hand, player_hand)
+            print ("Your score is higher than the players. You win!\n")
+            wins += 1
+        elif total(player_hand) > total(dealer_hand):
+            print_results(dealer_hand, player_hand)
+            print ("Your score is lower than the players. You lost!\n")
+            losses += 1
+
 def game():
     global wins
     global losses
@@ -141,7 +170,6 @@ def game():
     userchoice = 0
     aichoice = ["h", "s"]
     clear()
-
     userchoice = input("Do you want to be a [D]ealer or a [P]layer: ").lower()
 
     if userchoice == 'd':
@@ -160,7 +188,7 @@ def game():
             while not quit:
                 print ("Now the player will choose...")
                 print ("-"*30+"\n")
-                choice = aichoice.pop()
+                choice = random.choice(aichoice)
                 if choice == 'h':
                     print('The players choice is to hit!')
                     hit(player_hand)
@@ -175,7 +203,7 @@ def game():
                         play_again()
 
                 elif choice == 's':
-                    print('The players choice is to stand')
+                    print ("The players choice is to stand")
                     print ("-"*30+"\n")
                     while total(dealer_hand)<17:
                         hit(dealer_hand)
@@ -186,6 +214,7 @@ def game():
                             losses += 1
                             play_again()
                     
+                    
                 elif choice == 'q':
                     print('The game ended, the player left the table!')
                     quit = True
@@ -194,7 +223,8 @@ def game():
                 
 
 
-    elif userchoice == 'p':
+    if userchoice == 'p':
+        
         print("-"*30+"\n")
         print("    \033[1;32;40mWINS:  \033[1;37;40m%s   \033[1;31;40mLOSSES:  \033[1;37;40m%s\n" % (wins, losses))
         print("-"*30+"\n")

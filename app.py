@@ -66,7 +66,7 @@ def print_results(dealer_hand, player_hand):
     print("-"*30+"\n")
     print("    \033[1;32;40mWINS:  \033[1;37;40m%s   \033[1;31;40mLOSSES:  \033[1;37;40m%s\n" % (wins, losses))
     print("-"*30+"\n")
-    print ("The dealer has a " + str(dealer_hand) + " for a total of " + str(total(dealer_hand)))
+    print ("The dealers hand is  " + str(dealer_hand) + " for a total of " + str(total(dealer_hand)))
     print ("You have a " + str(player_hand) + " for a total of " + str(total(player_hand)))
 
 def blackjack(dealer_hand, player_hand):

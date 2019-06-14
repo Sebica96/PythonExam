@@ -11,6 +11,7 @@ deck = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]*(int(decks)*4)
 wins = 0
 losses = 0
 money = 1000
+blackjack_status = False
 
 def deal(deck):
     hand = []
@@ -77,18 +78,26 @@ def print_results(dealer_hand, player_hand):
     print ("The dealers hand is  " + str(dealer_hand) + " for a total of " + str(total(dealer_hand)))
     print ("You have a " + str(player_hand) + " for a total of " + str(total(player_hand)))
 
-def blackjack(dealer_hand, player_hand):
+def blackjack(dealer_hand, player_hand, bet):
     global wins
     global losses
+    global money
+    global blackjack_status
     if total(player_hand) == 21:
         print_results(dealer_hand, player_hand)
         print ("Congratulations! You got a Blackjack!\n")
         wins += 1
+        money +=int(bet) 
+        blackjack_status = True
+        return blackjack_status
         #play_again()
     elif total(dealer_hand) == 21:
         print_results(dealer_hand, player_hand)
         print ("Sorry, you lose. The dealer got a blackjack.\n")
         losses += 1
+        money -=int(bet)
+        blackjack_status = True
+        return blackjack_status
         #play_again()
 
 def blackjack_dealer(dealer_hand, player_hand):
@@ -239,19 +248,21 @@ def game():
         global money
         bet = 0
         while money > 0:
+            blackjack_status = False
             bet = input("Choose your bet, must be lower than " + str(money) + "\n")
             
             dealer_hand = deal(deck)
             player_hand = deal(deck)
             print ("The dealer is showing a " + str(dealer_hand[0]))
             print ("You have a " + str(player_hand) + " for a total of " + str(total(player_hand)))
-            blackjack(dealer_hand, player_hand)
+            blackjack(dealer_hand, player_hand, bet)
             quit=False
             
-            
             while not quit:
+                
                 choice = input("Do you want to [H]it, [S]tand, or [Q]uit: ").lower()
                 print("-"*30)
+                    
                 if choice == 'h':
                     hit(player_hand)
                     print("Your hand is: " + str(player_hand))
@@ -264,7 +275,7 @@ def game():
                         losses += 1
                         money = money - int(bet)
                         quit = True
-                        
+                            
                 elif choice=='s':
                     while total(dealer_hand)<17:
                         hit(dealer_hand)
@@ -275,7 +286,7 @@ def game():
                             print("-"*30)
                             wins += 1
                             money += int(bet)
-                            
+                                
                     score(dealer_hand,player_hand,bet)
                     quit = True
 
@@ -298,6 +309,6 @@ class TestMethods(unittest.TestCase):
 
 
 if __name__ == "__main__":
-   unittest.main(verbosity=3)
+   #unittest.main(verbosity=3)
    game()
    

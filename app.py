@@ -1,5 +1,6 @@
 import os
 import random
+import unittest
 
 decks = input("Enter number of decks to use: ")
 
@@ -274,7 +275,7 @@ def game():
                             print("-"*30)
                             wins += 1
                             money += int(bet)
-                            quit = True
+                            
                     score(dealer_hand,player_hand,bet)
                     quit = True
 
@@ -285,8 +286,18 @@ def game():
         print("You are out of credits! You are kicked out of the table!")
         play_again()
 
-           
+
+class TestMethods(unittest.TestCase):
+    
+    def test_totalhand(self):
+        self.assertEqual(total(['J','A']), 19)
+        
+    def test_totalhand2(self):
+        self.assertEqual(total(['J','A']), 21)
+
 
 
 if __name__ == "__main__":
-   game()
+   unittest.main(verbosity=3)
+   #game()
+   

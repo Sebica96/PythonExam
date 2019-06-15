@@ -11,7 +11,7 @@ deck = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]*(int(decks)*4)
 wins = 0
 losses = 0
 money = 1000
-blackjack_status = False
+quit = False
 
 def deal(deck):
     hand = []
@@ -26,8 +26,14 @@ def deal(deck):
     return hand
 
 def play_again():
+    global wins
+    global losses
+    global money
     again = input("Do you want to play again? (Y/N) : ").lower()
     if again == "y":
+        wins = 0
+        losse = 0
+        money = 1000
         dealer_hand = []
         player_hand = []
         deck = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]*4
@@ -70,34 +76,41 @@ def clear():
 
 def print_results(dealer_hand, player_hand):
     clear()
-
+    print ("The dealers hand is  " + str(dealer_hand) + " for a total of " + str(total(dealer_hand)))
+    print ("You have a " + str(player_hand) + " for a total of " + str(total(player_hand)))
+    
+def print_score(wins, losses):
+   
     print("\n    WELCOME TO BLACKJACK!\n")
     print("-"*30+"\n")
     print("    \033[1;32;40mWINS:  \033[1;37;40m%s   \033[1;31;40mLOSSES:  \033[1;37;40m%s\n" % (wins, losses))
     print("-"*30+"\n")
-    print ("The dealers hand is  " + str(dealer_hand) + " for a total of " + str(total(dealer_hand)))
-    print ("You have a " + str(player_hand) + " for a total of " + str(total(player_hand)))
+    
 
 def blackjack(dealer_hand, player_hand, bet):
+    
     global wins
     global losses
     global money
-    global blackjack_status
+    global quit
+    
     if total(player_hand) == 21:
         print_results(dealer_hand, player_hand)
         print ("Congratulations! You got a Blackjack!\n")
         wins += 1
         money +=int(bet) 
-        blackjack_status = True
-        return blackjack_status
-        #play_again()
+        
+        
     elif total(dealer_hand) == 21:
         print_results(dealer_hand, player_hand)
         print ("Sorry, you lose. The dealer got a blackjack.\n")
         losses += 1
         money -=int(bet)
-        blackjack_status = True
-        return blackjack_status
+        
+    
+    
+        
+        
         #play_again()
 
 def blackjack_dealer(dealer_hand, player_hand):
@@ -122,32 +135,32 @@ def score(dealer_hand, player_hand, bet):
         global losses
         global money
         if total(player_hand) == 21:
-            print_results(dealer_hand, player_hand)
+           
             print ("Congratulations! You got a Blackjack!\n")
             wins += 1
             money += int(bet)
         elif total(dealer_hand) == 21:
-            print_results(dealer_hand, player_hand)
+            
             print ("Sorry, you lose. The dealer got a blackjack.\n")
             losses += 1
             money -= int(bet)
         elif total(player_hand) > 21:
-            print_results(dealer_hand, player_hand)
+            
             print ("Sorry. You busted. You lose.\n")
             losses += 1
             money -= int(bet)
         elif total(dealer_hand) > 21:
-            print_results(dealer_hand, player_hand)
+            
             print ("Dealer busts. You win!\n")
             wins += 1
             money += int(bet)
         elif total(player_hand) < total(dealer_hand):
-            print_results(dealer_hand, player_hand)
+            
             print ("Sorry. Your score isn't higher than the dealer. You lose.\n")
             losses += 1
             money -= int(bet)
         elif total(player_hand) > total(dealer_hand):
-            print_results(dealer_hand, player_hand)
+            
             print ("Congratulations. Your score is higher than the dealer. You win\n")
             wins += 1
             money += int(bet)
@@ -191,6 +204,7 @@ def game():
     userchoice = input("Do you want to be a [D]ealer or a [P]layer: ").lower()
 
     if userchoice == 'd':
+            quit = False
 
             print("-"*30+"\n")
             print("    \033[1;32;40mWINS:  \033[1;37;40m%s   \033[1;31;40mLOSSES:  \033[1;37;40m%s\n" % (wins, losses))
@@ -201,7 +215,7 @@ def game():
             print ("The players hand is " + str(player_hand) + " for a total of " + str(total(player_hand)))
             blackjack_dealer(dealer_hand, player_hand)
             
-            quit=False
+         
 
             while not quit:
                 print ("Now the player will choose...")
@@ -242,28 +256,46 @@ def game():
 
 
     if userchoice == 'p':
-        print("-"*30+"\n")
-        print("    \033[1;32;40mWINS:  \033[1;37;40m%s   \033[1;31;40mLOSSES:  \033[1;37;40m%s\n" % (wins, losses))
-        print("-"*30+"\n")
+        
         global money
         bet = 0
+        
         while money > 0:
-            blackjack_status = False
+            print_score(wins,losses)
+            
+            quit=False
+            
             bet = input("Choose your bet, must be lower than " + str(money) + "\n")
             
             dealer_hand = deal(deck)
             player_hand = deal(deck)
             print ("The dealer is showing a " + str(dealer_hand[0]))
             print ("You have a " + str(player_hand) + " for a total of " + str(total(player_hand)))
-            blackjack(dealer_hand, player_hand, bet)
-            quit=False
+            
+            
             
             while not quit:
+                if total(player_hand) == 21:
+                    print_results(dealer_hand, player_hand)
+                    print ("Congratulations! You got a Blackjack!\n")
+                    wins += 1
+                    money +=int(bet) 
+                    quit = True
+                   
+                        
+                elif total(dealer_hand) == 21:
+                    print_results(dealer_hand, player_hand)
+                    print ("Sorry, you lose. The dealer got a blackjack.\n")
+                    losses += 1
+                    money -=int(bet)
+                    quit = True
+                
                 
                 choice = input("Do you want to [H]it, [S]tand, or [Q]uit: ").lower()
                 print("-"*30)
                     
                 if choice == 'h':
+                    print("Your choice was to hit\n")
                     hit(player_hand)
                     print("Your hand is: " + str(player_hand))
                     print("The total value of your hand is: " + str(total(player_hand)))
@@ -275,22 +307,32 @@ def game():
                         losses += 1
                         money = money - int(bet)
                         quit = True
+                    elif total(player_hand)==21:
+                        print('Congratulations! You got a BLACKJACK!')
+                        print("-"*30)
+                        wins +=1
+                        money = money + int(bet)
+                        quit = True
                             
                 elif choice=='s':
+                    print("Your choice was to stand")
+                    print("-"*30)
                     while total(dealer_hand)<17:
                         hit(dealer_hand)
-                        print("The dealers hand is: " + str(dealer_hand))
                         print("-"*30)
-                        if total(dealer_hand)>21:
-                            print('Dealer busts, you win!')
-                            print("-"*30)
-                            wins += 1
-                            money += int(bet)
+                    print("The dealers hand is: " + str(dealer_hand) + " for a total of " + str(total(dealer_hand)))
+                    print("Your hand is: " + str(player_hand) + " for a total of " + str(total(player_hand)))
+                    if total(dealer_hand)>21:
+                        print('Dealer busts, you win!')
+                        print("-"*30)
+                        wins += 1
+                        money += int(bet)
                                 
                     score(dealer_hand,player_hand,bet)
                     quit = True
 
                 elif choice == "q":
+                    print("Your choice was to quit\n")
                     print("Bye!")
                     quit=True
                     exit()

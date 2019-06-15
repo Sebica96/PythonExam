@@ -32,11 +32,11 @@ def play_again():
     again = input("Do you want to play again? (Y/N) : ").lower()
     if again == "y":
         wins = 0
-        losse = 0
+        losses = 0
         money = 1000
-        dealer_hand = []
-        player_hand = []
-        deck = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]*4
+        #dealer_hand = []
+        #player_hand = []
+        #deck = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]*4
         game()
         
     elif again == "n":
@@ -79,39 +79,14 @@ def print_results(dealer_hand, player_hand):
     print ("The dealers hand is  " + str(dealer_hand) + " for a total of " + str(total(dealer_hand)))
     print ("You have a " + str(player_hand) + " for a total of " + str(total(player_hand)))
     
-def print_score(wins, losses):
+def print_score(wins, losses, money):
    
     print("\n    WELCOME TO BLACKJACK!\n")
     print("-"*30+"\n")
-    print("    \033[1;32;40mWINS:  \033[1;37;40m%s   \033[1;31;40mLOSSES:  \033[1;37;40m%s\n" % (wins, losses))
+    print("    \033[1;32;40mWINS:  \033[1;37;40m%s   \033[1;31;40mLOSSES:  \033[1;37;40m%s\n   \033[1;32;40mMONEY:  \033[1;37;40m%s" % (wins, losses, money))
     print("-"*30+"\n")
     
 
-def blackjack(dealer_hand, player_hand, bet):
-    
-    global wins
-    global losses
-    global money
-    global quit
-    
-    if total(player_hand) == 21:
-        print_results(dealer_hand, player_hand)
-        print ("Congratulations! You got a Blackjack!\n")
-        wins += 1
-        money +=int(bet) 
-        
-        
-    elif total(dealer_hand) == 21:
-        print_results(dealer_hand, player_hand)
-        print ("Sorry, you lose. The dealer got a blackjack.\n")
-        losses += 1
-        money -=int(bet)
-        
-    
-    
-        
-        
-        #play_again()
 
 def blackjack_dealer(dealer_hand, player_hand):
     global wins
@@ -259,13 +234,19 @@ def game():
         
         global money
         bet = 0
+        bet_status = False
         
         while money > 0:
-            print_score(wins,losses)
+            print_score(wins,losses,money)
             
             quit=False
             
-            bet = input("Choose your bet, must be lower than " + str(money) + "\n")
+            while not bet_status:
+                bet = input("Choose your bet, must be lower than " + str(money) + "\n")
+                if int(bet) < money:
+                    bet_status = True
+                elif int(bet) > money:
+                    print("Wrong input!")
             
             dealer_hand = deal(deck)
             player_hand = deal(deck)
@@ -290,52 +271,47 @@ def game():
                     money -=int(bet)
                     quit = True
                 
-                
-                choice = input("Do you want to [H]it, [S]tand, or [Q]uit: ").lower()
-                print("-"*30)
+                elif total(dealer_hand) and total(player_hand) !=21:
+                    choice = input("Do you want to [H]it, [S]tand, or [Q]uit: ").lower()
+                    print("-"*30)
                     
-                if choice == 'h':
-                    print("Your choice was to hit\n")
-                    hit(player_hand)
-                    print("Your hand is: " + str(player_hand))
-                    print("The total value of your hand is: " + str(total(player_hand)))
-                    print("-"*30)
-                    if total(player_hand)>21:
-                        print('You busted!')
-                        print('Dealer wins!')
+                    if choice == 'h':
+                        print("Your choice was to hit\n")
+                        hit(player_hand)
+                        print("Your hand is: " + str(player_hand))
+                        print("The total value of your hand is: " + str(total(player_hand)))
                         print("-"*30)
-                        losses += 1
-                        money = money - int(bet)
-                        quit = True
-                    elif total(player_hand)==21:
-                        print('Congratulations! You got a BLACKJACK!')
-                        print("-"*30)
-                        wins +=1
-                        money = money + int(bet)
-                        quit = True
-                            
-                elif choice=='s':
-                    print("Your choice was to stand")
-                    print("-"*30)
-                    while total(dealer_hand)<17:
-                        hit(dealer_hand)
-                        print("-"*30)
-                    print("The dealers hand is: " + str(dealer_hand) + " for a total of " + str(total(dealer_hand)))
-                    print("Your hand is: " + str(player_hand) + " for a total of " + str(total(player_hand)))
-                    if total(dealer_hand)>21:
-                        print('Dealer busts, you win!')
-                        print("-"*30)
-                        wins += 1
-                        money += int(bet)
+                        if total(player_hand)>21:
+                            print('You busted!')
+                            print('Dealer wins!')
+                            print("-"*30)
+                            losses += 1
+                            money = money - int(bet)
+                            quit = True
+                        elif total(player_hand)==21:
+                            print('Congratulations! You got a BLACKJACK!')
+                            print("-"*30)
+                            wins +=1
+                            money = money + int(bet)
+                            quit = True
                                 
-                    score(dealer_hand,player_hand,bet)
-                    quit = True
+                    elif choice=='s':
+                        print("Your choice was to stand")
+                        print("-"*30)
+                        while total(dealer_hand)<17:
+                            hit(dealer_hand)
+                            
+                        print("The dealers hand is: " + str(dealer_hand) + " for a total of " + str(total(dealer_hand)))
+                        print("Your hand is: " + str(player_hand) + " for a total of " + str(total(player_hand)))
+                        print("-"*30)            
+                        score(dealer_hand,player_hand,bet)
+                        quit = True
 
-                elif choice == "q":
-                    print("Your choice was to quit\n")
-                    print("Bye!")
-                    quit=True
-                    exit()
+                    elif choice == "q":
+                        print("Your choice was to quit\n")
+                        print("Bye!")
+                        quit=True
+                        exit()
         print("You are out of credits! You are kicked out of the table!")
         play_again()
 

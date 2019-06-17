@@ -234,19 +234,24 @@ def game():
         
         global money
         bet = 0
-        bet_status = False
+        
         
         while money > 0:
             print_score(wins,losses,money)
             
-            quit=False
+            quit = False
+            bet_status = False
             
             while not bet_status:
                 bet = input("Choose your bet, must be lower than " + str(money) + "\n")
-                if int(bet) < money:
+                if bet.isdigit() is False:
+                    print("The value you enter must be a number only!")
+                
+                elif int(bet) <= money:
                     bet_status = True
                 elif int(bet) > money:
                     print("Wrong input!")
+                
             
             dealer_hand = deal(deck)
             player_hand = deal(deck)

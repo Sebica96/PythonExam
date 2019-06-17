@@ -30,6 +30,11 @@ def play_again():
     global losses
     global money
     again = input("Do you want to play again? (Y/N) : ").lower()
+    while (again != 'y') and (again != 'n'):
+        print('Wrong input!')
+        again = input("Do you want to play again? (Y/N) : ").lower()
+        
+        
     if again == "y":
         wins = 0
         losses = 0
@@ -176,7 +181,11 @@ def game():
     userchoice = 0
     aichoice = ["h", "s"]
     clear()
+    
     userchoice = input("Do you want to be a [D]ealer or a [P]layer: ").lower()
+    while (userchoice != 'd') and (userchoice != 'p'):
+        print('Wrong input!')
+        userchoice = input("Please enter 'p' for 'Player' or 'd' for 'Dealer': ").lower()
 
     if userchoice == 'd':
             quit = False
@@ -279,6 +288,10 @@ def game():
                 elif total(dealer_hand) and total(player_hand) !=21:
                     choice = input("Do you want to [H]it, [S]tand, or [Q]uit: ").lower()
                     print("-"*30)
+                    while (choice != 'h') and (choice != 's') and (choice != 'q'):
+                        print('Wrong input!')
+                        choice = input("Do you want to [H]it, [S]tand, or [Q]uit: ").lower()
+                        
                     
                     if choice == 'h':
                         print("Your choice was to hit\n")

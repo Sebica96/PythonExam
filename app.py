@@ -78,10 +78,7 @@ def hit(hand):
     return hand
 #Clears the terminal of output
 def clear():
-    if os.name == 'nt':
-        os.system('CLS')
-    if os.name == 'posix':
-        os.system('clear')
+    os.system('cls' if os.name == 'nt' else 'clear')
         
 #This method prints the hand and the value of that respective hand of both the dealer and the player
 #It takes the dealer_hand and the player_hand lists as arguments 

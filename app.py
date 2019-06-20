@@ -28,6 +28,7 @@ def deal(deck):
 #This method tests if the user wants to play the game again 
 def play_again():
     #Initializing the values with global to make sure they will be modified globally
+    
     global wins
     global losses
     global money
@@ -43,6 +44,7 @@ def play_again():
     #Also makes sure that the dealer hand and the player hand is empty
     #Choosing 'y' also invokes the game method in order to play the game again 
     if again == "y":
+        clear()
         wins = 0
         losses = 0
         money = 1000
@@ -84,7 +86,7 @@ def clear():
 #It takes the dealer_hand and the player_hand lists as arguments 
 #It makes use of the total() method in order to return the value of the 
 def print_results(dealer_hand, player_hand):
-    clear()
+    #clear()
     print ("The dealers hand is  " + str(dealer_hand) + " for a total of " + str(total(dealer_hand)))
     print ("You have a " + str(player_hand) + " for a total of " + str(total(player_hand)))
 
@@ -101,18 +103,15 @@ def print_score(wins, losses, money):
 #This method also takes the dealer hand and player hand lists and the calculates if either of them got a blackjack
 #The if statements are using the total method in order to compare the value of the hand to 21 
 def blackjack_dealer(dealer_hand, player_hand):
-    global wins
-    global losses
+    
     #If it they pass the black jack test the wins and losses are update accordingly and the play_again() method is invoked
     if total(player_hand) == 21:
         print_results(dealer_hand, player_hand)
         print ("The player got a blackjack! You lost!\n")
-        losses += 1
         play_again()
     elif total(dealer_hand) == 21:
         print_results(dealer_hand, player_hand)
         print ("You got a blackhack! You won!\n")
-        wins += 1
         play_again()
 
 
@@ -161,32 +160,36 @@ def score(dealer_hand, player_hand, bet):
 #This method is very similar to the score method  used for the player
 def score_dealer(dealer_hand, player_hand):
         
-        global wins
-        global losses
         if total(player_hand) == 21:
             print_results(dealer_hand, player_hand)
             print ("The player got a BLACKJACK! You lost!\n")
-            losses += 1
+            play_again()
+           
         elif total(dealer_hand) == 21:
             print_results(dealer_hand, player_hand)
             print ("You got a BLACKJACK! You won!\n")
-            wins += 1
+            play_again()
+           
         elif total(player_hand) > 21:
             print_results(dealer_hand, player_hand)
             print ("The player busted. You win!\n")
-            wins += 1
+            play_again()
+           
         elif total(dealer_hand) > 21:
             print_results(dealer_hand, player_hand)
             print ("You bust! You lost!\n")
-            losses += 1
+            play_again()
+            
         elif total(player_hand) < total(dealer_hand):
             print_results(dealer_hand, player_hand)
             print ("Your score is higher than the players. You win!\n")
-            wins += 1
+            play_again()
+            
         elif total(player_hand) > total(dealer_hand):
             print_results(dealer_hand, player_hand)
             print ("Your score is lower than the players. You lost!\n")
-            losses += 1
+            play_again()
+            
             
 #The game method incorporates all of the methods above to deliver the actual game
 def game():
@@ -207,21 +210,21 @@ def game():
         userchoice = input("Please enter 'p' for 'Player' or 'd' for 'Dealer': ").lower()
     clear()
     
-    #If the player chooses to go in dealer mode the following sequence will happen
+    #If the player chooses to go in dealer mode the following sequence will take place
     if userchoice == 'd':
-            quit = False
-
-            print("-"*30+"\n")
-            print("    \033[1;32;40mWINS:  \033[1;37;40m%s   \033[1;31;40mLOSSES:  \033[1;37;40m%s\n" % (wins, losses))
-            print("-"*30+"\n")
+            
+            print('Your choise was to enter [D]ealer mode!')
+            print('')
+            print('-'*30)
             dealer_hand = deal(deck)
             player_hand = deal(deck)
-            print ("Your hand is " + str(dealer_hand[0]))
+            print ("Your hand is " + str(dealer_hand))
             print ("The players hand is " + str(player_hand) + " for a total of " + str(total(player_hand)))
-            blackjack_dealer(dealer_hand, player_hand)
+            print ('')
             
-         
-
+            blackjack_dealer(dealer_hand, player_hand)
+            quit = False
+            
             while not quit:
                 print ("Now the player will choose...")
                 print ("-"*30+"\n")
@@ -236,26 +239,24 @@ def game():
                         print('You win, the player busted!')
                         print("The players hand total exceeded 21")
                         print ("-"*30+"\n")
-                        wins += 1
-                        play_again()
+                        quit = True
+                    elif total(player_hand) == 21:
+                        print('You lost, the player got a BLACKJACK!')
+                        quit = True
+                        
 
                 elif choice == 's':
                     print ("The players choice is to stand")
                     print ("-"*30+"\n")
                     while total(dealer_hand)<17:
                         hit(dealer_hand)
-                        print(dealer_hand)
-                        if total(dealer_hand)>21:
-                            print('You busted, the player wins!')
-                            print("\n")
-                            losses += 1
-                            play_again()
+                        print('You drew a ' + str(dealer_hand[-1]))
+                        
+                    score_dealer(dealer_hand,player_hand)
                     
-                    
-                elif choice == 'q':
-                    print('The game ended, the player left the table!')
-                    quit = True
-                    exit()
+            play_again()        
+                
+             
 
                 
 
